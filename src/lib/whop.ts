@@ -1,5 +1,5 @@
-import { WhopSDK, type Membership } from "@whop-sdk/core";
-import type { UserOAuthService } from "@whop-sdk/core";
+import { cache } from "react";
+import { WhopSDK, type UserOAuthService } from "@whop-sdk/core";
 
 // main Whop SDK
 export const whop = new WhopSDK({
@@ -10,23 +10,20 @@ export const whop = new WhopSDK({
  * helper to get a user's membership for a certain product
  * @returns boolean
  */
-export async function getMembership(
-	sdk: UserOAuthService,
-	productId: string
-): Promise<Membership | undefined> {
+export const getMembership = cache(async (sdk: UserOAuthService, productId: string) => {
 	const result = await sdk.listUsersMemberships({
 		accessPassId: productId,
 		valid: true,
 	});
 
 	return result.data ? result.data[0] : undefined;
-}
+});
 
 /**
  * helper to check if a user has access to at least one of the given products,
  * @returns boolean
  */
-export async function hasAccess(sdk: UserOAuthService, ...allowedProductIds: string[]) {
+export const hasAccess = cache(async (sdk: UserOAuthService, ...allowedProductIds: string[]) => {
 	const { data: memberships } = await sdk.listUsersMemberships({ valid: true });
 
 	if (!memberships) {
@@ -40,4 +37,4 @@ export async function hasAccess(sdk: UserOAuthService, ...allowedProductIds: str
 	}
 
 	return false;
-}
+});

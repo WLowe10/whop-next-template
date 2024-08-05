@@ -3,6 +3,18 @@ import { redirect } from "next/navigation";
 import { getServerSession, type NextAuthOptions } from "next-auth";
 import { WhopSDK } from "@whop-sdk/core";
 
+declare module "next-auth" {
+	interface Session {
+		accessToken: string;
+		user: {
+			id: string;
+		};
+	}
+	interface JWT {
+		accessToken: string;
+	}
+}
+
 export const authOptions: NextAuthOptions = {
 	providers: [
 		{
@@ -31,10 +43,7 @@ export const authOptions: NextAuthOptions = {
 		},
 	],
 	callbacks: {
-		async session({ session, user, token }) {
-			// todo revisit this
-
-			// should it use the properties from session?
+		async session({ session, token }) {
 			session.user.id = token.id as string;
 			session.accessToken = token.accessToken as string;
 

@@ -44,7 +44,7 @@ export default function HomePage() {
 			</div>
 			<div className={styles.grid}>
 				<LinkCard
-					title="App (Next.js 13)"
+					title="App (Next.js 14)"
 					text="View an implementation of our payment gate with the app directory."
 					href="/ssr"
 				/>

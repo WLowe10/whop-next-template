@@ -1,9 +1,10 @@
-import { getUserSdk } from "@/lib/get-user-sdk/app";
 import { getMembership } from "@/lib/whop";
 import { allowedProducts } from "@/constants";
-import type { Membership } from "@whop-sdk/core";
+import { requireAuth } from "@/lib/auth";
+import { whop } from "@/lib/whop";
+import { recommendedPlan } from "@/constants";
 import styles from "@/styles/home.module.css";
-import { auth } from "@/lib/auth";
+import { PurchaseLink } from "@/components/purchase-link";
 
 /**
  * The Layout of this level is product-gated, which makes
@@ -17,69 +18,101 @@ export default async function GatedProductPage() {
 	 * section will never be rendered as the layout already
 	 * verifies that the product is owned.
 	 */
-	const { sdk } = await auth();
+	const { sdk } = await requireAuth({
+		failureRedirect: "/ssr",
+	});
 
+	// find the membership
 	// todo this reflects original functionality of the template, but should be revisited
-	const membership = (await getMembership(sdk!, allowedProducts[0]!)) as Membership;
+	const membership = await getMembership(sdk, allowedProducts[0]!);
+
+	let recommendedProduct;
+
+	if (!membership) {
+		/**
+		 * fetch the recommended product to display what users
+		 * will be buying.
+		 */
+		recommendedProduct = await whop.plans.retrievePlan({ id: recommendedPlan });
+	}
 
 	return (
-		<div className={styles.container}>
-			<main className={styles.main}>
-				<div className={styles.description}>
-					<a
-						href="/ssr"
-						className={styles.card}
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<span>&lt;-</span> Go back
-					</a>
-					<p>
-						Edit this page inside of{" "}
-						<code className={styles.code}>app/ssr/page.tsx</code>
+		<main className={styles.main}>
+			<div className={styles.description}>
+				<a href="/ssr" className={styles.card} target="_blank" rel="noopener noreferrer">
+					<span>&lt;-</span> Go back
+				</a>
+				<p>
+					Edit this page inside of{" "}
+					<code className={styles.code}>app/ssr/product-gated/page.tsx</code>
+				</p>
+			</div>
+
+			<div className={styles.center}>
+				<div className={styles.otherbox}>
+					<h1>{membership ? "Access Granted 🚀" : "Purchase Access To Product"}</h1>
+					<p style={{ marginBottom: 10 }}>
+						{membership
+							? "This page is shown to a user who is signed in, and owns your required product!"
+							: "This page is shown to a user who is signed in but does not currently own a Product."}
 					</p>
-				</div>
 
-				<div className={styles.center}>
-					<div className={styles.otherbox}>
-						<h1>
-							Access <a href="#">Granted 🚀</a>
-						</h1>
-						<p>
-							This page is shown to a user who is signed in, and owns your required
-							product!
-						</p>
-					</div>
+					{membership ? (
+						<code>{JSON.stringify(membership, null, "\t")}</code>
+					) : (
+						<>
+							<p style={{ textAlign: "center" }} className={styles.card}>
+								User has membership: No
+							</p>
+							<p style={{ textAlign: "center" }} className={styles.card}>
+								Reccomended pricing plan:{" "}
+								<code>{JSON.stringify(recommendedProduct, null, "\t")}</code>
+							</p>
+						</>
+					)}
 				</div>
-				<div
-					className={styles.grid}
-					style={{
-						display: "flex",
-						justifyContent: "center",
-						alignItems: "center",
-					}}
-				>
-					<a
-						href={
-							"https://whop.com/hub/" + membership.id + "?utm_source=nextjs-template"
-						}
-						className={styles.card}
-					>
-						<h2>Customer Portal &rarr;</h2>
-						<p>Manage your billing and access.</p>
-					</a>
+			</div>
+			<div
+				className={styles.grid}
+				style={{
+					display: "flex",
+					justifyContent: "center",
+					alignItems: "center",
+				}}
+			>
+				{membership ? (
+					<>
+						<a
+							href={
+								"https://whop.com/hub/" +
+								membership.id +
+								"?utm_source=nextjs-template"
+							}
+							className={styles.card}
+						>
+							<h2>Customer Portal &rarr;</h2>
+							<p>Manage your billing and access.</p>
+						</a>
 
-					<a
-						href={
-							"https://whop.com/hub/" + membership.id + "?utm_source=nextjs-template"
-						}
-						className={styles.card}
-					>
-						<h2>Leave a review &rarr;</h2>
-						<p>If you like this web app, leave a review!</p>
-					</a>
-				</div>
-			</main>
-		</div>
+						<a
+							href={
+								"https://whop.com/hub/" +
+								membership.id +
+								"?utm_source=nextjs-template"
+							}
+							className={styles.card}
+						>
+							<h2>Leave a review &rarr;</h2>
+							<p>If you like this web app, leave a review!</p>
+						</a>
+					</>
+				) : (
+					<PurchaseLink className={styles.card} plan={recommendedPlan}>
+						<h2>Buy Access &rarr;</h2>
+						<p>Purchase via Whop.</p>{" "}
+					</PurchaseLink>
+				)}
+			</div>
+		</main>
 	);
 }
