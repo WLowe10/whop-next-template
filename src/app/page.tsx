@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { LinkCard } from "@/components/link-card";
 import type { Metadata } from "next";
-
 import styles from "@/styles/home.module.css";
 
 export const meta: Metadata = {

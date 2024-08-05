@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePurchaseLink } from "@/lib/get-purchase-link";
+import { getPurchaseLink } from "@/utils/whop";
 import type { PropsWithChildren } from "react";
 
 export type PurchaseLinkProps = {
 	plan: string;
-	redirect?: string;
+	redirect: string;
 	className?: string;
 };
 
@@ -16,7 +16,7 @@ export const PurchaseLink = ({
 	className,
 	children,
 }: PropsWithChildren<PurchaseLinkProps>) => {
-	const link = usePurchaseLink(plan, redirect);
+	const link = getPurchaseLink(plan, redirect);
 
 	return (
 		<Link className={className} href={link}>

@@ -1,4 +1,7 @@
+import { cache } from "react";
+import { redirect } from "next/navigation";
 import { getServerSession, type NextAuthOptions } from "next-auth";
+import { WhopSDK } from "@whop-sdk/core";
 
 export const authOptions: NextAuthOptions = {
 	providers: [
@@ -57,3 +60,35 @@ export const authOptions: NextAuthOptions = {
  * @see https://next-auth.js.org/configuration/nextjs
  */
 export const getServerAuthSession = () => getServerSession(authOptions);
+
+export const auth = cache(async () => {
+	const session = await getServerAuthSession();
+
+	if (!session) {
+		return {
+			session,
+			user: null,
+			sdk: null,
+		};
+	}
+
+	return {
+		session,
+		user: session.user,
+		sdk: new WhopSDK({ TOKEN: session.accessToken }).userOAuth,
+	};
+});
+
+export type RequireAuthOpts = {
+	failureRedirect: string;
+};
+
+export async function requireAuth(opts: RequireAuthOpts) {
+	const result = await auth();
+
+	if (!result.session) {
+		return redirect(opts.failureRedirect);
+	}
+
+	return result;
+}

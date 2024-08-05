@@ -1,9 +1,9 @@
-import { LinkCard } from "@/components/link-card";
-import getSdk from "@/lib/get-user-sdk/app";
-import findProduct from "@/lib/has-product";
+import { getUserSdk } from "@/lib/get-user-sdk/app";
+import { getMembership } from "@/lib/whop";
+import { allowedProducts } from "@/constants";
+import type { Membership } from "@whop-sdk/core";
 import styles from "@/styles/home.module.css";
-
-const ALLOWED_PRODUCT: string = process.env.NEXT_PUBLIC_REQUIRED_PRODUCT || "";
+import { auth } from "@/lib/auth";
 
 /**
  * The Layout of this level is product-gated, which makes
@@ -17,15 +17,17 @@ export default async function GatedProductPage() {
 	 * section will never be rendered as the layout already
 	 * verifies that the product is owned.
 	 */
-	const { sdk } = await getSdk();
-	const membership = await findProduct(sdk!, ALLOWED_PRODUCT)!;
+	const { sdk } = await auth();
+
+	// todo this reflects original functionality of the template, but should be revisited
+	const membership = (await getMembership(sdk!, allowedProducts[0]!)) as Membership;
 
 	return (
 		<div className={styles.container}>
 			<main className={styles.main}>
 				<div className={styles.description}>
 					<a
-						href="/app/ssr"
+						href="/ssr"
 						className={styles.card}
 						target="_blank"
 						rel="noopener noreferrer"
@@ -34,7 +36,7 @@ export default async function GatedProductPage() {
 					</a>
 					<p>
 						Edit this page inside of{" "}
-						<code className={styles.code}>app/app/ssr/page.tsx</code>
+						<code className={styles.code}>app/ssr/page.tsx</code>
 					</p>
 				</div>
 

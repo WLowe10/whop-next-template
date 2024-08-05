@@ -1,10 +1,8 @@
+import type { Metadata } from "next";
 import styles from "@/styles/home.module.css";
 
-export const metadata = {
+export const metadata: Metadata = {
 	title: "Whop Powered Application (SSG)",
-	icons: {
-		icon: [{ url: "/logo.svg" }, new URL("/logo.svg", "https://whop.com")],
-	},
 };
 
 /**
@@ -18,7 +16,7 @@ export default function GatedProductPage() {
 			<main className={styles.main}>
 				<div className={styles.description}>
 					<a
-						href="/app/ssr"
+						href="/ssr"
 						className={styles.card}
 						target="_blank"
 						rel="noopener noreferrer"
@@ -27,7 +25,7 @@ export default function GatedProductPage() {
 					</a>
 					<p>
 						Edit this page inside of{" "}
-						<code className={styles.code}>app/app/ssg/product-gated/page.tsx</code>
+						<code className={styles.code}>app/ssg/product-gated/page.tsx</code>
 					</p>
 				</div>
 

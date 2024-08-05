@@ -5,14 +5,10 @@ import { NextRequestWithAuth } from "next-auth/middleware";
  * gets the UserService from the WhopSDK from the session
  * @in middleware
  */
-const getSdk = (req: NextRequestWithAuth) => {
+export function getUserSdk(req: NextRequestWithAuth) {
 	const token = req.nextauth.token?.accessToken as string;
 
-	if (!token) return {};
+	if (!token) return null;
 
-	return {
-		sdk: new WhopSDK({ TOKEN: token }).userOAuth,
-	};
-};
-
-export default getSdk;
+	return new WhopSDK({ TOKEN: token }).userOAuth;
+}

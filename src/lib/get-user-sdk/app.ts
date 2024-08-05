@@ -8,15 +8,12 @@ import { getServerAuthSession } from "../auth";
  * @dev wrapped in React.cache so other helpers that rely
  * on it can be properly cached too
  */
-const getSdk = cache(async () => {
+export const getUserSdk = async () => {
 	const session = await getServerAuthSession();
 
-	if (!session) return {};
+	if (!session) {
+		return null;
+	}
 
-	return {
-		sdk: new WhopSDK({ TOKEN: session.accessToken }).userOAuth,
-		user: session.user,
-	};
-});
-
-export default getSdk;
+	return new WhopSDK({ TOKEN: session.accessToken }).userOAuth;
+};
