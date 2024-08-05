@@ -1,4 +1,3 @@
-import { Inter } from "next/font/google";
 import styles from "@/styles/home.module.css";
 
 export const metadata = {
@@ -7,8 +6,6 @@ export const metadata = {
 		icon: [{ url: "/logo.svg" }, new URL("/logo.svg", "https://whop.com")],
 	},
 };
-
-const inter = Inter({ subsets: ["latin"] });
 
 /**
  * this page is protected by the middleware, so if
@@ -36,8 +33,8 @@ export default function GatedProductPage() {
 
 				<div className={styles.center}>
 					<div className={styles.otherbox}>
-						<h1 className={inter.className}>Access Granted 🚀 (SSG)</h1>
-						<p className={inter.className}>
+						<h1>Access Granted 🚀 (SSG)</h1>
+						<p>
 							This page is protected by the middleware, so if no SSG bailouts are used
 							here, the page will be statically served.
 						</p>

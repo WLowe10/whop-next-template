@@ -9,7 +9,7 @@ export const authOptions: NextAuthOptions = {
 			authorization: "https://whop.com/oauth",
 			token: "https://api.whop.com/api/v5/oauth/token",
 			userinfo: "https://api.whop.com/api/v5/me",
-			clientId: process.env.NEXT_PUBLIC_WHOP_CLIENT_ID,
+			clientId: process.env.WHOP_CLIENT_ID,
 			clientSecret: process.env.WHOP_CLIENT_SECRET,
 			allowDangerousEmailAccountLinking: true,
 			profile(profile: {

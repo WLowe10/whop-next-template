@@ -3,12 +3,9 @@ import { cached as findProduct } from "@/lib/has-product";
 import { redirect } from "next/navigation";
 import { retrievePlan } from "./get-data";
 import { PurchaseLink } from "@/components/purchase-link";
-import { Inter } from "next/font/google";
 import type { PropsWithChildren } from "react";
 
 import styles from "@/styles/home.module.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 /**
  * a list of product IDs that are allowed to view this page
@@ -55,7 +52,6 @@ export default async function SSRProductGatedLayout({ children }: PropsWithChild
 					<div className={styles.center}>
 						<div className={styles.otherbox}>
 							<h1
-								className={inter.className}
 								style={{
 									paddingLeft: "5px",
 								}}

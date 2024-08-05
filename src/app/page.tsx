@@ -47,7 +47,7 @@ export default function HomePage() {
 				<LinkCard
 					title="App (Next.js 13)"
 					text="View an implementation of our payment gate with the app directory."
-					href="/app/ssr"
+					href="/ssr"
 				/>
 				<LinkCard
 					title="Documentation"
