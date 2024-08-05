@@ -16,7 +16,7 @@ export default function GatedProductPage() {
 			<main className={styles.main}>
 				<div className={styles.description}>
 					<a
-						href="/ssr"
+						href="/ssg"
 						className={styles.card}
 						target="_blank"
 						rel="noopener noreferrer"

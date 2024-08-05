@@ -1,10 +1,9 @@
 import { getMembership } from "@/lib/whop";
-import { allowedProducts } from "@/constants";
 import { requireAuth } from "@/lib/auth";
 import { whop } from "@/lib/whop";
-import { recommendedPlan } from "@/constants";
-import styles from "@/styles/home.module.css";
+import { allowedProducts, recommendedPlan } from "@/constants";
 import { PurchaseLink } from "@/components/purchase-link";
+import styles from "@/styles/home.module.css";
 
 /**
  * The Layout of this level is product-gated, which makes

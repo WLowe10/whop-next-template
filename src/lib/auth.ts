@@ -1,7 +1,7 @@
 import { cache } from "react";
 import { redirect } from "next/navigation";
 import { getServerSession, type NextAuthOptions } from "next-auth";
-import { WhopSDK } from "@whop-sdk/core";
+import { getUserSdk } from "./whop";
 
 declare module "next-auth" {
 	interface Session {
@@ -84,7 +84,7 @@ export const auth = cache(async () => {
 	return {
 		session,
 		user: session.user,
-		sdk: new WhopSDK({ TOKEN: session.accessToken }).userOAuth,
+		sdk: getUserSdk(session.accessToken),
 	};
 });
 

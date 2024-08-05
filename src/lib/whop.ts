@@ -1,4 +1,3 @@
-import { cache } from "react";
 import { WhopSDK, type UserOAuthService } from "@whop-sdk/core";
 
 // main Whop SDK
@@ -7,23 +6,31 @@ export const whop = new WhopSDK({
 });
 
 /**
+ * helper to create a usersdk from their access token
+ * @returns user sdk
+ */
+export function getUserSdk(accessToken: string) {
+	return new WhopSDK({ TOKEN: accessToken }).userOAuth;
+}
+
+/**
  * helper to get a user's membership for a certain product
  * @returns boolean
  */
-export const getMembership = cache(async (sdk: UserOAuthService, productId: string) => {
+export async function getMembership(sdk: UserOAuthService, productId: string) {
 	const result = await sdk.listUsersMemberships({
 		accessPassId: productId,
 		valid: true,
 	});
 
 	return result.data ? result.data[0] : undefined;
-});
+}
 
 /**
  * helper to check if a user has access to at least one of the given products,
  * @returns boolean
  */
-export const hasAccess = cache(async (sdk: UserOAuthService, ...allowedProductIds: string[]) => {
+export async function hasAccess(sdk: UserOAuthService, ...allowedProductIds: string[]) {
 	const { data: memberships } = await sdk.listUsersMemberships({ valid: true });
 
 	if (!memberships) {
@@ -37,4 +44,4 @@ export const hasAccess = cache(async (sdk: UserOAuthService, ...allowedProductId
 	}
 
 	return false;
-});
+}
